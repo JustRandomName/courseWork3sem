@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include <vector>
+#include <QString>
+#include <QDebug>
 namespace Ui {
 class add_pat;
 }

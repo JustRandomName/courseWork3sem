@@ -7,7 +7,14 @@
 #include <QSqlQuery>
 #include <QWidget>
 #include "add_pat.h"
-#include <expt.h>
+#include "expt.h"
+#include <QtSql>
+#include <QSqlError>
+#include <QSqlRecord>
+#include <QDebug>
+#include <QString>
+#include <QSqlQueryModel>
+
 namespace Ui {
 class Base;
 }

@@ -2,7 +2,16 @@
 #define DIALOG_H
 #include <QtSql>
 #include <QDialog>
-
+#include <iostream>
+#include <string>
+#include <QSqlError>
+#include <QSqlRecord>
+#include <QDebug>
+#include <QString>
+#include <QSqlQuery>
+#include <QFile>
+#include <QTextStream>
+#include "base.h"
 namespace Ui {
 class Dialog;
 }

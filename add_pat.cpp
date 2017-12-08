@@ -1,7 +1,4 @@
 #include "ui_add_pat.h"
-#include <QString>
-#include <vector>
-#include <QDebug>
 #include "add_pat.h"
 
 add_pat::add_pat(QWidget *parent) :
