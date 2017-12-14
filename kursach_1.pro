@@ -28,20 +28,20 @@ SOURCES += \
         mainwindow.cpp \
     dialog.cpp \
     base.cpp \
-    add_pat.cpp \
     ExeptionAbstract.cpp \
-    expt.cpp
+    expt.cpp \
+    person.cpp
 
 HEADERS += \
         mainwindow.h \
     dialog.h \
     base.h \
-    add_pat.h \
     ExeptionAbstract.h \
-    expt.h
+    expt.h \
+    person.h
 
 FORMS += \
         mainwindow.ui \
     dialog.ui \
     base.ui \
-    add_pat.ui
+    person.ui

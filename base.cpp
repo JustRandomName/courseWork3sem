@@ -1,6 +1,6 @@
 #include "base.h"
 #include "ui_base.h"
-#include "add_pat.h"
+#include "person.h"
 #include <QtSql>
 #include <QWidget>
 #include <QSqlError>
@@ -31,9 +31,8 @@ void Base :: writeOnLog(QString data) {
         file.close();
         return;
     }
-    else {
-        throw EmptyQueueException();
-    }
+    else throw EmptyExeption();
+
 }
 
 QString Base :: generateUserId() {
@@ -45,22 +44,27 @@ QString Base :: generateUserId() {
     return generetedId;
 }
 
-void Base :: deleteQuere(QString tableName, QString deleteEntity, QString row) {     // удаление по username
-    add = new add_pat();
+void Base :: deleteQuere(QString tableName, QString deleteEntity, QString row) {
+    add = new Person();
     add->exec();
-    BD = QSqlDatabase :: addDatabase("QSQLITE");
-    BD.setHostName("127.0.0.1");
-    BD.setUserName("SYSDBA");
-    BD.setPassword("masterkey");
-    BD.setDatabaseName("D:\\DataBase.db");
-    BD.open();
-    qDebug() << "DELETE FROM \'" + tableName + "\' WHERE \'" + row +"\' = \'" + add->write[0].name +"\';";
-    QSqlQuery query = BD.exec("DELETE FROM \'" + tableName + "\' WHERE " + row + " = \'" + add->write[0].name +"\';"); // try
-    writeOnLog(" User " + username + " delete " + deleteEntity + " " + add->write[0].name + " from database; ");
-    model->select();
-    ui->tableView->setModel(model);
-    BD.close();
 
+    if(add->flag) {
+        loadDB("D:\\DataBase.db", tableName);
+    } else{
+        BD = QSqlDatabase :: addDatabase("QSQLITE");
+        BD.setDatabaseName("D:\\DataBase.db");
+        BD.open();
+        qDebug() << "DELETE FROM \'" + tableName + "\' WHERE \'" + row +"\' = \'" + add->write[0].name +"\';";
+        QSqlQuery query = BD.exec("DELETE FROM \'" + tableName + "\' WHERE " + row + " = \'" + add->write[0].name +"\';"); // try
+        if(tableName.compare("doctors")) {
+            QSqlQuery query1 = BD.exec("DELETE FROM secretdata WHERE userId = \'" + add->write[0].diag + "\';");
+            qDebug()<<"DELETE FROM secretdata WHERE userId = \'" + add->write[0].diag + "\';";
+        }
+        writeOnLog(" User " + username + " delete " + deleteEntity + " " + add->write[0].name + " from database; ");
+        model->select();
+        ui->tableView->setModel(model);
+        BD.close();
+    }
 }
 
 void Base::loadDB(QString way, QString name_BD) {
@@ -70,11 +74,9 @@ void Base::loadDB(QString way, QString name_BD) {
     }
 
     BD = QSqlDatabase :: addDatabase("QSQLITE");
-    BD.setHostName("127.0.0.1");
-    BD.setUserName("SYSDBA");
-    BD.setPassword("masterkey");
+
     BD.setDatabaseName(way);
-    if(!BD.open()) throw EmptyQueueException();
+    if(!BD.open()) throw EmptyExeption();
 
     model = new QSqlTableModel(this, BD);
     model->setTable(name_BD);
@@ -88,10 +90,9 @@ void Base::loadDB(QString way, QString name_BD) {
         } else
             model->select();
     }
-
+    ui->tableView->setEnabled(true);
     ui->tableView->setModel(model);
-    ui->comboBox->setModel(model);
-    ui->comboBox->setModelColumn(0);
+    ui->tableView->colorCount();
     BD.close();
 }
 
@@ -100,12 +101,14 @@ Base::~Base() {
 }
 
 void Base::on_pushButton_clicked() {
-    this->~Base();
+    close();
 }
 
 void Base::on_pushButton_2_clicked() {
     flag = false;
     verification = true;
+    ui->pushButton_4->setEnabled(true);
+    ui->pushButton_5->setEnabled(true);
     loadDB("D:\\DataBase.db", "patient");
 }
 
@@ -116,37 +119,44 @@ void Base::on_pushButton_3_clicked() {
     flag = true;
     if(QString :: compare(role, "admin") == 0)
         verification = true;
-    else
+    else {
         verification = false;
+        ui->pushButton_4->setEnabled(false);
+        ui->pushButton_5->setEnabled(false);
+    }
     try {
-        loadDB("D:\\DataBase.db", "dok_log");
-    } catch (EmptyQueueException& e) {
+        loadDB("D:\\DataBase.db", "doktors");
+    } catch (EmptyExeption& e) {
         writeOnLog(e.what());
     }
 }
 
 void Base::on_pushButton_5_clicked() {  // название таблицы, 3 значения
-    add = new add_pat();
+    add = new Person();
     add->exec();
     BD = QSqlDatabase :: addDatabase("QSQLITE");
     BD.setDatabaseName("D:\\DataBase.db");
     try {
         BD.open();
     } catch(...) {
-        qDebug()<< "DB";
+        exit(1);
     }
     QSqlQuery query;
     if(flag == true) {
         for(size_t i = 0; i < add->write.size(); i++) {
             QString _userId = generateUserId();
-            query.prepare("INSERT INTO dok_log (userId, username) VALUES (\'"+ _userId +"\',\'"+ add->write[i].name +"\')");
+            query.prepare("INSERT INTO doktors (userId, username) VALUES (\'"+ _userId +"\',\'"+ add->write[i].name +"\');");
             QSqlQuery query1;
-            query1.prepare("INSERT INTO secretdata (userId, password, role) VALUES(\'"+ _userId +"\',\'"+ add->write[i].diag +"\', 'user' )");
+            qDebug() << _userId;
+            qDebug() << add->write[i].diag;
+
+            bool fl = query1.exec("INSERT INTO secretdata (userId, password, role) VALUES(\'"+ _userId +"\',\'"+ add->write[i].diag +"\', 'user' );");
+            qDebug() << fl;
             writeOnLog("User " + username + " add to system doctor " + add->write[i].name + " whith password " + add->write[i].diag + ";");
         }
     } else {
-        for(size_t i = 0; i < add->write.size(); i++){
-            query.prepare("INSERT INTO patient (diag, name, doctor) VALUES (\'"+ add->write[i].diag +"\','"+ add->write[i].name +"\','"+ username +"\')");
+        for(size_t i = 0; i < add->write.size(); i++) {
+            query.prepare("INSERT INTO patient (diag, name, doctor) VALUES (\'"+ add->write[i].diag +"\','"+ add->write[i].name +"\','"+ username +"\');");
             writeOnLog("User " + username + " add to system patient " + add->write[i].name + " whith diagnosis " + add->write[i].diag + ";");
         }
     }
@@ -161,7 +171,7 @@ void Base::on_pushButton_5_clicked() {  // название таблицы, 3 з
 
 void Base::on_pushButton_4_clicked() {
     if(flag)
-        deleteQuere("dok_log", "doctor", "username");
+        deleteQuere("doktors", "doctor", "username");
     else
         deleteQuere("patient", "patient", "name");
 }

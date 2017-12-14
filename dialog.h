@@ -2,8 +2,6 @@
 #define DIALOG_H
 #include <QtSql>
 #include <QDialog>
-#include <iostream>
-#include <string>
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QDebug>
@@ -12,6 +10,7 @@
 #include <QFile>
 #include <QTextStream>
 #include "base.h"
+// рабочая версия
 namespace Ui {
 class Dialog;
 }
@@ -27,8 +26,6 @@ public:
 private slots:
     void on_pushButton_2_clicked();
 
-    void on_pushButton_clicked_ok();
-
     void on_pushButton_clicked();
 
     void on_lineEdit_textEdited(const QString &arg1);
@@ -41,8 +38,6 @@ private:
     QString userPassword;
     QString username;
     QString role;
-protected:
-    QString lvl;
 };
 
 #endif // DIALOG_H

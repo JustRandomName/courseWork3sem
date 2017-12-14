@@ -26,31 +26,31 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>65</x>
-      <y>25</y>
-      <width>201</width>
-      <height>231</height>
+      <x>66</x>
+      <y>83</y>
+      <width>211</width>
+      <height>41</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="text">
-        <string>Log In</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>exit</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="text">
+     <string>Enter into system</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>66</x>
+      <y>172</y>
+      <width>211</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>exit</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>350</width>
-     <height>23</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuNice_to_meet_you">

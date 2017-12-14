@@ -5,8 +5,8 @@
 #include <QString>
 using namespace std;
 
-class EmptyQueueException : public BasicQueueException {
+class EmptyExeption : public ExeptionAbstract {
 public:
-    explicit EmptyQueueException() : BasicQueueException("Queue is empty") {}
+    explicit EmptyExeption() : ExeptionAbstract("Queue is empty") {}
 };
 #endif // EXPT_H

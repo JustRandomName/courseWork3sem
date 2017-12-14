@@ -1,16 +1,6 @@
 #include "dialog.h"
 #include "ui_dialog.h"
-#include <iostream>
-#include <string>
-#include <QtSql>
-#include <QSqlError>
-#include <QSqlRecord>
-#include <QDebug>
-#include <QString>
-#include <QSqlQuery>
-#include <QFile>
-#include <QTextStream>
-#include "base.h"
+
 using namespace std;
 
 Dialog::Dialog(QWidget *parent) :
@@ -25,31 +15,32 @@ Dialog::~Dialog() {
 }
 
 
-void Dialog::on_pushButton_clicked_ok() { }
-
 void Dialog::on_pushButton_clicked() {
-    this->~Dialog();
+    close();
 }
 
 void Dialog::on_pushButton_2_clicked() { // обернуть в свой try
-    QSqlDatabase DB_log_dot = QSqlDatabase :: addDatabase("QSQLITE");
-    DB_log_dot = QSqlDatabase :: addDatabase("QSQLITE");
-    DB_log_dot.setHostName("127.0.0.1");
-    DB_log_dot.setUserName("SYSDBA");
-    DB_log_dot.setPassword("masterkey");
-    DB_log_dot.setDatabaseName("D:\\DataBase.db");
-    DB_log_dot.open();
+    QSqlDatabase DB = QSqlDatabase :: addDatabase("QSQLITE");
+    DB = QSqlDatabase :: addDatabase("QSQLITE");
+    DB.setDatabaseName("D:\\DataBase.db");
+    if(!DB.open()) exit(1);
     QSqlQuery query1;
     QSqlQuery query;
     query1.exec("SELECT role FROM secretData WHERE userId = \'" + usver_ID +"\' AND password = \'" + userPassword + "\';");
-    query.exec("SELECT username FROM dok_log WHERE userId = \'" + usver_ID + "\';");
+    query.exec("SELECT username FROM doktors WHERE userId = \'" + usver_ID + "\';");
     query1.first();
     query.first();
     role = query1.value(0).toString();
     username = query.value(0).toString();
-    Base* base = new Base(0, username, role);
-    base->writeOnLog("\nUser " + username + " enter in system whith role " + role + ";");
-    base->exec();
+    if(role == "" || username == "") {
+        this->~Dialog();
+        Dialog* dialog = new Dialog();
+        dialog->exec();
+    } else {
+        Base* base = new Base(0, username, role);
+        base->writeOnLog("\nUser " + username + " enter in system whith role " + role + ";");
+        base->exec();
+    }
 
 }
 

@@ -1,13 +1,12 @@
 #ifndef BASE_H
 #define BASE_H
-
+#include "person.h"
+#include "expt.h"
 #include <QDialog>
 #include <QSqlTableModel>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QWidget>
-#include "add_pat.h"
-#include "expt.h"
 #include <QtSql>
 #include <QSqlError>
 #include <QSqlRecord>
@@ -42,7 +41,7 @@ private:
     bool verification = false;
     QString username;
     QString role;
-    add_pat* add;
+    Person* add;
     Ui::Base *ui;
     QSqlTableModel* model;
     QSqlDatabase BD;
